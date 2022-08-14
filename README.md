@@ -4,3 +4,23 @@
 ## :open_book: Project Overview :
 ASLR Disabler is a little utility to disable PE ASLR by just drag and drop the PE file.  
 The UI of ASLR Disabler is based on one of my other project, [ImGUI Standalone](https://github.com/adamhlt/ImGui-Standalone).
+
+The start of goal of this project was to easily disable ASLR on PE dumps, to make them run.
+
+## :rocket: Getting Started
+
+Make that **DXSDK_DIR** is declared in your environment variables.
+
+To see your environment variables :
+
+> **Settings --> System --> About --> System Advanced Settings --> Environment Variables**
+
+### Visual Studio :
+
+1. Open the solution file (.sln).
+2. Build the project in Release (x86 or x64)
+
+Every configuration in x86 / x64 (Debug and Realese) are already configured with librairies and includes.
+
+⚠️ If you have any linking error when compiling make sure that you have correctly install DirectX SDK.
+

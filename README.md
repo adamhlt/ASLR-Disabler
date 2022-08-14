@@ -7,6 +7,8 @@ The UI of ASLR Disabler is based on one of my other project, [ImGUI Standalone](
 
 The start of goal of this project was to easily disable ASLR on PE dumps, to make them run.
 
+ASLR Disabler works with x86 and x64 PE.
+
 ## :rocket: Getting Started
 
 Make that **DXSDK_DIR** is declared in your environment variables.
@@ -23,4 +25,3 @@ To see your environment variables :
 Every configuration in x86 / x64 (Debug and Realese) are already configured with librairies and includes.
 
 ⚠️ If you have any linking error when compiling make sure that you have correctly install DirectX SDK.
-

@@ -15,8 +15,8 @@ void Patch::FileDropHandler(WPARAM wParam)
     if (hFileContent == nullptr)
         return;
 
-    DisableASLR(hFileContent);
-    PatchFile(hFileContent);
+    if(DisableASLR(hFileContent) == 0)
+        PatchFile(hFileContent);
 
     CloseHandle(hFile);
     HeapFree(GetProcessHeap(), 0, hFileContent);
@@ -71,16 +71,26 @@ HANDLE Patch::GetFileContent(const char* lpFilePath)
 /**
  * Function to modify the PE to disable ASLR.
  * \param hFileContent : handle to the PE image content.
+ * \return : status of patching, 0 file is patch else no.
  */
-void Patch::DisableASLR(const HANDLE hFileContent)
+int Patch::DisableASLR(const HANDLE hFileContent)
 {
     const auto lpImageDOSHeader = (PIMAGE_DOS_HEADER)hFileContent;
     const auto lpImageNTHeader = (PIMAGE_NT_HEADERS32)((DWORD_PTR)lpImageDOSHeader + lpImageDOSHeader->e_lfanew);
 
     //Patch x86 PE
     if (lpImageNTHeader->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC)
+    {
         if (lpImageNTHeader->OptionalHeader.DllCharacteristics & IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE)
             lpImageNTHeader->OptionalHeader.DllCharacteristics &= ~IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE;
+        else
+        {
+            if (MessageBoxA(nullptr, "ASLR is already disable, do you want to enable it ?", "ASLR alredy disable", MB_ICONQUESTION | MB_YESNO) == IDYES)
+                lpImageNTHeader->OptionalHeader.DllCharacteristics |= IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE;
+            else
+                return -1;
+        }
+    }
 
     //Patch x64 PE
     if (lpImageNTHeader->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC)
@@ -88,7 +98,16 @@ void Patch::DisableASLR(const HANDLE hFileContent)
         const auto lpImageNTHeader64 = (PIMAGE_NT_HEADERS64)((DWORD_PTR)lpImageDOSHeader + lpImageDOSHeader->e_lfanew);
         if (lpImageNTHeader64->OptionalHeader.DllCharacteristics & IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE)
             lpImageNTHeader64->OptionalHeader.DllCharacteristics &= ~IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE;
+        else
+        {
+            if (MessageBoxA(nullptr, "ASLR is already disable, do you want to enable it ?", "ASLR disabled", MB_ICONQUESTION | MB_YESNO) == IDYES)
+                lpImageNTHeader64->OptionalHeader.DllCharacteristics |= IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE;
+            else
+                return -1;
+        }
     }
+
+    return 0;
 }
 
 /**
@@ -100,7 +119,7 @@ void Patch::PatchFile(const HANDLE hFileContent)
     const auto sBufferSize = (DWORD)HeapSize(GetProcessHeap(), 0, hFileContent);
     SetFilePointer(hFile, 0, nullptr, FILE_BEGIN);
     if (WriteFile(hFile, hFileContent, sBufferSize, nullptr, nullptr))
-        MessageBoxA(nullptr, "ASLR successfully disabled !", "Success", MB_ICONINFORMATION);
+        MessageBoxA(nullptr, "File successfully modified !", "Success", MB_ICONINFORMATION);
     else
         MessageBoxA(nullptr, "An error is occured when trying to write the file !", "Error", MB_ICONERROR);
 }

@@ -12,7 +12,7 @@ private:
 	static HANDLE hFile;
 
 	static HANDLE GetFileContent(const char* lpFilePath);
-	static void DisableASLR(const HANDLE hFileContent);
+	static int DisableASLR(const HANDLE hFileContent);
 	static void PatchFile(const HANDLE hFileContent);
 };
 

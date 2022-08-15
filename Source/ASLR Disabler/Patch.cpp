@@ -79,11 +79,17 @@ int Patch::DisableASLR(const HANDLE hFileContent)
 
     const auto lpSignatureCheck = (LPSTR)lpImageDOSHeader;
     if (lpSignatureCheck[0] != 'M' || lpSignatureCheck[1] != 'Z')
+    {
+        MessageBoxA(nullptr, "Your PE file is not valid !", "Error", MB_OK | MB_ICONERROR);
         return -1;
+    }
 
     const auto lpImageNTHeader = (PIMAGE_NT_HEADERS32)((DWORD_PTR)lpImageDOSHeader + lpImageDOSHeader->e_lfanew);
     if (lpImageNTHeader->Signature != IMAGE_NT_SIGNATURE)
+    {
+        MessageBoxA(nullptr, "Your PE file is not valid !", "Error", MB_OK | MB_ICONERROR);
         return -1;
+    }
 
     //Patch x86 PE
     if (lpImageNTHeader->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC)

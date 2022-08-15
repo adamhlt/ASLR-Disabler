@@ -69,14 +69,21 @@ HANDLE Patch::GetFileContent(const char* lpFilePath)
 }
 
 /**
- * Function to modify the PE to disable ASLR.
+ * Function to check the validity of the PE file and modify the PE to disable ASLR.
  * \param hFileContent : handle to the PE image content.
  * \return : status of patching, 0 file is patch else no.
  */
 int Patch::DisableASLR(const HANDLE hFileContent)
 {
     const auto lpImageDOSHeader = (PIMAGE_DOS_HEADER)hFileContent;
+
+    const auto lpSignatureCheck = (LPSTR)lpImageDOSHeader;
+    if (lpSignatureCheck[0] != 'M' || lpSignatureCheck[1] != 'Z')
+        return -1;
+
     const auto lpImageNTHeader = (PIMAGE_NT_HEADERS32)((DWORD_PTR)lpImageDOSHeader + lpImageDOSHeader->e_lfanew);
+    if (lpImageNTHeader->Signature != IMAGE_NT_SIGNATURE)
+        return -1;
 
     //Patch x86 PE
     if (lpImageNTHeader->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC)

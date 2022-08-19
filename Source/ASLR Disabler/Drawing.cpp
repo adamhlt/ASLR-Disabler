@@ -1,7 +1,7 @@
 #include "Drawing.h"
 
 LPCSTR Drawing::lpWindowName = "ASLR Disabler";
-ImVec2 Drawing::vWindowSize = { 500, 270 };
+ImVec2 Drawing::vWindowSize = { 170, 90 };
 ImGuiWindowFlags Drawing::WindowFlags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize;
 bool Drawing::bDraw = true;
 
@@ -25,9 +25,7 @@ void Drawing::Draw()
 		{
 			ImGui::NewLine();
 			ImGui::NewLine();
-			ImGui::NewLine();
-			ImGui::NewLine();
-			ImGui::SameLine(110);
+			ImGui::SameLine(20);
 			ImGui::Text("Drag your file here");
 		}
 		ImGui::End();

@@ -68,6 +68,14 @@ HANDLE Patch::GetFileContent(const char* lpFilePath)
     return hFileContent;
 }
 
+DWORD Patch::ComputeChecksum(LPVOID lpImage, DWORD dwBufferSize)
+{
+    DWORD dwOriginalChecksum = 0;
+    DWORD dwComputedChecksum = 0;
+    CheckSumMappedFile(lpImage, dwBufferSize, &dwOriginalChecksum, &dwComputedChecksum);
+    return dwComputedChecksum;
+}
+
 /**
  * Function to check the validity of the PE file and modify the PE to disable ASLR.
  * \param hFileContent : handle to the PE image content.
@@ -103,6 +111,8 @@ int Patch::DisableASLR(const HANDLE hFileContent)
             else
                 return -1;
         }
+        const auto sBufferSize = (DWORD)HeapSize(GetProcessHeap(), 0, hFileContent);
+        lpImageNTHeader->OptionalHeader.CheckSum = ComputeChecksum(hFileContent, sBufferSize);
     }
 
     //Patch x64 PE
@@ -118,8 +128,10 @@ int Patch::DisableASLR(const HANDLE hFileContent)
             else
                 return -1;
         }
+        const auto sBufferSize = (DWORD)HeapSize(GetProcessHeap(), 0, hFileContent);
+        lpImageNTHeader64->OptionalHeader.CheckSum = ComputeChecksum(hFileContent, sBufferSize);
     }
-
+    
     return 0;
 }
 

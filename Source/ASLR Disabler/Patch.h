@@ -2,7 +2,7 @@
 #define PATCH_H
 
 #include <Windows.h>
-#include <shellapi.h>
+#include <ImageHlp.h>
 
 class Patch
 {
@@ -12,6 +12,7 @@ private:
 	static HANDLE hFile;
 
 	static HANDLE GetFileContent(const char* lpFilePath);
+	static DWORD ComputeChecksum(LPVOID lpImage, DWORD dwBufferSize);
 	static int DisableASLR(const HANDLE hFileContent);
 	static void PatchFile(const HANDLE hFileContent);
 };

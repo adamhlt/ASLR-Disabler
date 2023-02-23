@@ -11,7 +11,8 @@ ASLR Disabler works with x86 and x64 PE.
 
 ## :rocket: Getting Started
 
-Make that **DXSDK_DIR** is declared in your environment variables.
+> **Note** <br>
+> Make sure that **DXSDK_DIR** is declared in your environment variables.
 
 To see your environment variables :
 
@@ -24,8 +25,8 @@ To see your environment variables :
 
 Every configuration in x86 / x64 (Debug and Realese) are already configured with librairies and includes.
 
-⚠️ If you have any linking error when compiling make sure that you have correctly install DirectX SDK.
-
+> **Warning** <br>
+> If you have any linking error when compiling make sure that you have correctly install DirectX SDK.
 ## 🧪 Demonstration :
 
 https://user-images.githubusercontent.com/48086737/184556007-c7513c8c-c89c-426a-b603-39db5f75fba3.mp4
